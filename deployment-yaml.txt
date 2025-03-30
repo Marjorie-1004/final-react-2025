@@ -1,0 +1,58 @@
+Ahora que la imagen está en GCR, el siguiente paso es crear un archivo de configuración de Kubernetes (deployment.yaml) para desplegar la aplicación.
+
+Crea un archivo deployment.yaml en la raíz de tu proyecto con el siguiente contenido:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: react-todo-app
+spec:
+  replicas: 3  # Número de réplicas que quieres
+  selector:
+    matchLabels:
+      app: react-todo-app
+  template:
+    metadata:
+      labels:
+        app: react-todo-app
+    spec:
+      containers:
+      - name: react-todo-app
+        image: gcr.io/[PROJECT-ID]/react-todo-app:v1  # Reemplaza con tu imagen
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: react-todo-app-service
+spec:
+  selector:
+    app: react-todo-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer
+
+
+Este archivo tiene dos recursos:
+
+    Deployment: Despliega la aplicación React como un conjunto de réplicas en Kubernetes.
+
+    Service: Crea un servicio de tipo LoadBalancer para exponer la aplicación al mundo exterior a través de un puerto público.
+
+8. Aplicar el archivo de despliegue en Kubernetes
+
+Usa kubectl para aplicar el archivo de configuración de Kubernetes y desplegar la aplicación en tu clúster de GKE:
+    kubectl apply -f deployment.yaml
+Este comando creará el despliegue y el servicio en Kubernetes.
+
+9. Verificar que el despliegue sea exitoso
+
+Verifica que los pods y los servicios se hayan creado correctamente ejecutando:
+
+kubectl get pods
+
+Para ver los servicios disponibles, puedes ejecutar:
+kubectl get services
