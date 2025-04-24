@@ -3,9 +3,9 @@ pipeline {
     stages {
         stage('Clonar Repositorio') {
             steps {
-               
-                url: 'https://github.com/Marjorie-1004/final-react-2025.git',
-                branch: 'main'
+                git credentialsId: 'token_git',
+                    url: 'https://github.com/Marjorie-1004/final-react-2025.git',
+                    branch: 'main'
             }
         }
         stage('test') {
